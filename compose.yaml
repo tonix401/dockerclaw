@@ -2,32 +2,23 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
-    ports:
-      - "11434:11434"
     volumes:
       - ./data/ollama:/root/.ollama
+    ports:
+      - "11434:11434"
     restart: unless-stopped
-    networks:
-      - openclaw-network
-
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
     container_name: openclaw
     user: "1000:1000"
-    ports:
-      - "18789:18789"
     depends_on:
       - ollama
-    command: node openclaw.mjs gateway --allow-unconfigured --bind 0.0.0.0:18789
+    command: node openclaw.mjs gateway run --allow-unconfigured --bind lan
     environment:
       OLLAMA_BASE_URL: http://ollama:11434
       OLLAMA_API_KEY: ollama-local
     volumes:
       - ./data/openclaw:/home/node/.openclaw
+    ports:
+      - "18789:18789"
     restart: unless-stopped
-    networks:
-      - openclaw-network
-
-networks:
-  openclaw-network:
-    driver: bridge
