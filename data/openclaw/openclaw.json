@@ -10,6 +10,25 @@
       }
     }
   },
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "token": {
+        "source": "env",
+        "provider": "default",
+        "id": "DISCORD_BOT_TOKEN"
+      },
+      "dmPolicy": "open",
+      "allowFrom": ["*"],
+      "guilds": {
+        "673496192184745984": {
+          "users": [
+            "340170202773716994"
+          ]
+        }
+      }
+    }
+  },
   "messages": {
     "ackReactionScope": "group-mentions"
   },
@@ -20,11 +39,22 @@
     "ownerDisplay": "raw"
   },
   "gateway": {
+    "mode": "local",
+    "bind": "lan",
     "controlUi": {
       "allowedOrigins": [
+        "http://localhost",
+        "http://localhost:80",
+        "http://localhost/openclaw",
+        "http://127.0.0.1",
+        "http://127.0.0.1:80",
+        "http://127.0.0.1/openclaw",
         "http://localhost:18789",
         "http://127.0.0.1:18789",
-        "http://[::1]:18789"
+        "http://[::1]:18789",
+        "http://nginx:80",
+        "http://nginx",
+        "http://openclaw:18789"
       ]
     },
     "auth": {
@@ -32,8 +62,20 @@
       "token": "19c70f6c15af63b6243d8f7ff393a58a3053b5602bfce64f"
     }
   },
-  "meta": {
-    "lastTouchedVersion": "2026.3.28",
-    "lastTouchedAt": "2026-04-02T16:41:10.303Z"
+  "models": {
+    "providers": {
+      "ollama": {
+        "baseUrl": "http://ollama:11434",
+        "api": "ollama",
+        "apiKey": "ollama-local",
+        "models": [
+          {
+            "id": "llama3.1:8b-instruct-q4_K_M",
+            "name": "Llama 3.1 8B Instruct",
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
   }
 }
