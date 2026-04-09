@@ -1,24 +1,50 @@
 services:
   ollama:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.20.4
     container_name: ollama
+    networks:
+      - ai-net
     volumes:
       - ./data/ollama:/root/.ollama
-    ports:
-      - "11434:11434"
+    env_file:
+      - .env
+    environment:
+      - OLLAMA_NUM_PARALLEL=2
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_LOAD_TIMEOUT=10m
+    deploy:
+      resources:
+        limits:
+          memory: 16G
     restart: unless-stopped
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
     container_name: openclaw
     user: "1000:1000"
+    networks:
+      - ai-net
     depends_on:
       - ollama
-    command: node openclaw.mjs gateway run --allow-unconfigured --bind lan
-    environment:
-      OLLAMA_BASE_URL: http://ollama:11434
-      OLLAMA_API_KEY: ollama-local
+    command: node openclaw.mjs gateway run --allow-unconfigured --force
+    env_file:
+      - .env
     volumes:
       - ./data/openclaw:/home/node/.openclaw
-    ports:
-      - "18789:18789"
     restart: unless-stopped
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    networks:
+      - ai-net
+    depends_on:
+      - ollama
+      - openclaw
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+networks:
+  ai-net:
+    driver: bridge

@@ -1,0 +1,8 @@
+{
+    "name": "openclaw",
+    "scripts": {
+        "reload_nginx": "docker exec nginx nginx -s reload",
+        "reload_openclaw": "docker exec openclaw pkill -HUP node",
+        "recreate": "docker compose down && docker compose up -d"
+    }
+}
